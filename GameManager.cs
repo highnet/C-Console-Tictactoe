@@ -1,22 +1,22 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static TicTacToe.GameState;
 
 namespace TicTacToe
 {
+
     class GameManager
     {
-        public bool player1Starts;
-        public State gameState;
+        public enum GameState { GameIntro, Player1Turn, Player2Turn, Player1Victory, Player2Victory, Tie, GameOver }
+
+        public GameState gameState;
 
         public GameManager(bool _player1Starts)
         {
-            player1Starts = _player1Starts;
-            gameState = State.GameIntro;
+            gameState = GameState.GameIntro;
         }
 
+        internal bool GameOver()
+        {
+            return gameState == GameState.GameOver;
+        }
     }
 }
