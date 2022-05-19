@@ -1,32 +1,26 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TicTacToe
 {
     class Board
     {
-        public enum Winner { Nobody, Player1, Player2, Tie };
+        public enum BoardState {Undecided, Player1Wins, Player2Wins, Tie};
 
-        public String[,] gameBoard;
-        public Winner winner;
+        public String[,] board;
         public int turnsPlayed;
 
 
         public Board()
         {
-            gameBoard = new String[3, 3];
+            board = new String[3, 3];
 
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    gameBoard[i, j] = " ";
+                    board[i, j] = " ";
                 }
             }
-            winner = Winner.Nobody;
         }
 
         public void PrintBoard()
@@ -35,7 +29,11 @@ namespace TicTacToe
             {
                 for (int j = 0; j < 3; j++)
                 {
-                   Console.Write(gameBoard[i, j] + "|");
+                   Console.Write(board[i, j]);
+                    if (j < 2)
+                    {
+                        Console.Write("|");
+                    }
                     if (j == 2)
                     {
                         Console.WriteLine();
@@ -43,64 +41,110 @@ namespace TicTacToe
                 }
                 if (i < 2)
                 {
-                    Console.WriteLine("-------");
+                    Console.WriteLine("-|-|-");
 
                 }
             }
+            Console.WriteLine();
         }
 
-        public void CheckVictoryConditions()
+        internal void PrintBoardCoordinates()
         {
-            if (turnsPlayed == 8)
+            for (int i = 0; i < 3; i++)
             {
-                winner = Winner.Tie;
+                for (int j = 0; j < 3; j++)
+                {
+                    Console.Write(i + "," + j );
+                    if (j < 2)
+                    {
+                        Console.Write("|");
+                    }
+                    if (j == 2)
+                    {
+                        Console.WriteLine();
+                    }
+                }
+                if (i < 2)
+                {
+                    Console.WriteLine("---|---|---");
+
+                }
             }
+            Console.WriteLine();
+        }
+
+        public BoardState CheckVictoryConditions()
+        {
+
             for (int i = 0; i < 2; i++)
             {
-                if (gameBoard[i, 0] == "x" && gameBoard[i, 1] == "x" && gameBoard[i, 2] == "x")
+                if (board[i, 0] == "x" && board[i, 1] == "x" && board[i, 2] == "x")
                 {
-                    winner = Winner.Player1;
-                    return;
+                    return BoardState.Player1Wins;
                 }
-                else if (gameBoard[i, 0] == "o" && gameBoard[i, 1] == "o" && gameBoard[i, 2] == "o")
+                else if (board[i, 0] == "o" && board[i, 1] == "o" && board[i, 2] == "o")
                 {
-                    winner = Winner.Player2;
-                    return;
+                    return BoardState.Player2Wins;
                 }
-                if (gameBoard[0, i] == "x" && gameBoard[1, i] == "x" && gameBoard[2, i] == "x")
+                if (board[0, i] == "x" && board[1, i] == "x" && board[2, i] == "x")
                 {
-                    winner = Winner.Player1;
-                    return;
+                    return BoardState.Player1Wins;
                 }
-                else if (gameBoard[0, i] == "o" && gameBoard[1, i] == "o" && gameBoard[2, i] == "o")
+                else if (board[0, i] == "o" && board[1, i] == "o" && board[2, i] == "o")
                 {
-                    winner = Winner.Player2;
-                    return;
+                    return BoardState.Player2Wins;
                 }
 
-                if (gameBoard[0,0] == "x" && gameBoard[1,1] == "x" && gameBoard [2,2] == "x")
+                if (board[0, 0] == "x" && board[1, 1] == "x" && board[2, 2] == "x")
                 {
-                    winner = Winner.Player1;
-                    return;
-                } else if (gameBoard[0, 0] == "o" && gameBoard[1, 1] == "o" && gameBoard[2, 2] == "o")
-                {
-                    winner = Winner.Player2;
-                    return;
+                    return BoardState.Player1Wins;
                 }
-
-                if (gameBoard[0, 2] == "x" && gameBoard[1, 1] == "x" && gameBoard[2, 0] == "x")
+                else if (board[0, 0] == "o" && board[1, 1] == "o" && board[2, 2] == "o")
                 {
-                    winner = Winner.Player1;
-                    return;
+                    return BoardState.Player2Wins;
                 }
-                else if (gameBoard[0, 2] == "o" && gameBoard[1, 1] == "o" && gameBoard[2, 0] == "o")
-                {
-                    winner = Winner.Player2;
-                    return;
-                }
-
 
             }
+
+            if (board[0, 2] == "x" && board[1, 1] == "x" && board[2, 0] == "x")
+            {
+                return BoardState.Player1Wins;
+            }
+            else if (board[0, 2] == "o" && board[1, 1] == "o" && board[2, 0] == "o")
+            {
+                return BoardState.Player2Wins;
+            }
+
+            if (turnsPlayed == 9)
+            {
+                return BoardState.Tie;
+            }
+            return BoardState.Undecided;
+
+        }
+
+        internal bool IsEmptySquare(int i, int j)
+        {
+            return GetSquare(i, j) == " ";
+        }
+
+        public bool SetSquare(int i, int j, string v)
+        {
+            if (board != null)
+            {
+                board[i, j] = v;
+                return true;
+            }
+            return false;
+        }
+
+        public string GetSquare(int i, int j)
+        {
+            if (board != null)
+            {
+                return board[i, j];
+            }
+            return "ERROR";
         }
     }
 }
